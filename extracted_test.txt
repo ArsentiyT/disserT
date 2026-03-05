@@ -1,0 +1,25 @@
+--- Image: sample_images/test_russian_001.jpg ---
+Привет мир! Это тестовое изображение с русским текстом.
+Изображение номер 1
+
+--- Image: sample_images/test_russian_002.jpg ---
+ОСВ-распознавание русского языка требует специальной настройки.
+Изображение номер 2
+
+--- Image: sample_images/test_russian_003.jpg ---
+Тестирование точности извлечения текста из изображений.
+Изображение номер 3
+
+--- Image: sample_images/test_russian_004.jpg ---
+Система должна корректно распознавать кириллические символы.
+Изображение номер 4
+
+--- Image: sample_images/test_russian_005.jpg ---
+Ругпоп и ТеззегасЕ обеспечивают высокую точность распознавания.
+Изображение номер 5
+
+
+Summary:
+Total images processed: 5
+Successfully processed: 5
+Failed to process: 0
