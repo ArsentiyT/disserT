@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Script to extract text from .jpg images in Russian with best accuracy.
-Uses Tesseract OCR with Russian language model and various preprocessing techniques.
+Optimized for extracting only words and numbers (no tables or graphs).
+Uses Tesseract OCR with Russian language model and specialized preprocessing.
 """
 
 import os
@@ -33,6 +34,7 @@ def setup_logging():
 def preprocess_image(image_path):
     """
     Preprocess the image to improve OCR accuracy for Russian text.
+    Optimized for extracting only text (words and numbers), not tables or graphs.
     
     Args:
         image_path (str): Path to the image file
@@ -49,7 +51,7 @@ def preprocess_image(image_path):
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Apply non-local means denoising (better than Gaussian blur for text)
+    # Apply gentle denoising - preserve text details
     denoised = cv2.fastNlMeansDenoising(gray, None, 10, 7, 21)
     
     # Apply adaptive thresholding for better handling of varying lighting
@@ -58,19 +60,27 @@ def preprocess_image(image_path):
         cv2.THRESH_BINARY_INV, 11, 2
     )
     
-    # Also try OTSU thresholding
-    _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    
-    # Combine both thresholds - use adaptive where it has more detail, OTSU otherwise
-    combined = cv2.bitwise_or(adaptive_thresh, otsu_thresh)
-    
-    # Morphological operations to connect broken characters
+    # Morphological operations to connect broken characters but remove noise
+    # Use smaller kernel to avoid connecting separate text lines
     kernel = np.ones((2, 2), np.uint8)
-    dilated = cv2.dilate(combined, kernel, iterations=1)
+    dilated = cv2.dilate(adaptive_thresh, kernel, iterations=1)
     eroded = cv2.erode(dilated, kernel, iterations=1)
     
+    # Remove small noise components (likely from graphs/tables)
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(eroded, connectivity=8)
+    cleaned = np.zeros_like(eroded)
+    
+    # Keep only components that are likely text (not too small, not too large)
+    min_area = 20  # Minimum area for a character
+    max_area = 5000  # Maximum area to exclude large graph elements
+    
+    for i in range(1, num_labels):  # Skip background
+        area = stats[i, cv2.CC_STAT_AREA]
+        if min_area <= area <= max_area:
+            cleaned[labels == i] = 255
+    
     # Invert back to black text on white background for Tesseract
-    processed = cv2.bitwise_not(eroded)
+    processed = cv2.bitwise_not(cleaned)
     
     # Convert back to PIL Image
     pil_img = Image.fromarray(processed)
@@ -81,13 +91,12 @@ def preprocess_image(image_path):
 def extract_text_from_image(image_path, lang='rus+eng'):
     """
     Extract text from a single image using Tesseract OCR.
+    Optimized for extracting only Russian words and numbers (no tables/graphs).
     
-    The key issue with Russian text extraction is often:
-    1. Using character whitelist which can interfere with LSTM engine
-    2. Aggressive preprocessing that distorts Cyrillic characters
-    3. Not using the right PSM (Page Segmentation Mode)
-    
-    This function tries multiple approaches and returns the best result.
+    Key optimizations for text-only extraction:
+    1. Use PSM 6 (uniform block) which works better for continuous text
+    2. Filter out non-text elements during preprocessing
+    3. Use LSTM engine (--oem 1) for better Cyrillic recognition
     
     Args:
         image_path (str): Path to the image file
@@ -101,14 +110,10 @@ def extract_text_from_image(image_path, lang='rus+eng'):
         img = Image.open(image_path)
         
         # Configure Tesseract for best Russian text recognition
-        # Key findings:
-        # - LSTM engine (--oem 1) works better for Cyrillic than legacy (--oem 3)
-        # - NO character whitelist - it interferes with LSTM
-        # - PSM 3 (fully automatic) or PSM 6 (uniform block) work best
-        # - Minimal preprocessing often works better than aggressive processing
+        # PSM 6 assumes a uniform block of text - ideal for documents without tables/graphs
         configs = [
-            r'--oem 1 --psm 3',  # Fully automatic - best for most cases
-            r'--oem 1 --psm 6',  # Uniform block of text
+            r'--oem 1 --psm 6',  # Uniform block of text - best for pure text
+            r'--oem 1 --psm 3',  # Fully automatic - fallback
         ]
         
         best_text = ""
@@ -128,8 +133,16 @@ def extract_text_from_image(image_path, lang='rus+eng'):
                     best_confidence = avg_conf
                     best_text = pytesseract.image_to_string(img, lang=lang, config=config)
         
-        # Clean up the text
-        text = best_text.strip()
+        # Clean up the text - remove any remaining non-text artifacts
+        lines = best_text.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            line = line.strip()
+            # Keep lines that have actual text content (at least one letter or number)
+            if line and (any(c.isalpha() for c in line) or any(c.isdigit() for c in line)):
+                cleaned_lines.append(line)
+        
+        text = '\n'.join(cleaned_lines)
         
         return str(image_path), text, True
         

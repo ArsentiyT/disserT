@@ -1,0 +1,29 @@
+--- Image: /workspace/russian_test_set/test_001.jpg ---
+Привет мир
+
+--- Image: /workspace/russian_test_set/test_002.jpg ---
+Съешь ещё этих мягких французских 6
+
+--- Image: /workspace/russian_test_set/test_003.jpg ---
+Тестирование OCR системы
+
+--- Image: /workspace/russian_test_set/test_004.jpg ---
+Москва Санкт-Петербург Новосибирск
+
+--- Image: /workspace/russian_test_set/test_005.jpg ---
+1234567890
+
+--- Image: /workspace/russian_test_set/test_006.jpg ---
+АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦУЧШЩУ
+
+--- Image: /workspace/russian_test_set/test_007.jpg ---
+абвгдеёжзийклмнопрстуфхцичшщъыьэн
+
+--- Image: /workspace/russian_test_set/test_008.jpg ---
+Документ № 123 от 05.03.2024
+
+
+Summary:
+Total images processed: 8
+Successfully processed: 8
+Failed to process: 0
