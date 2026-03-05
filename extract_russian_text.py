@@ -14,6 +14,7 @@ from pathlib import Path
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
+import tempfile
 
 
 def setup_logging():
