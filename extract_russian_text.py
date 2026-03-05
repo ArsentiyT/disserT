@@ -32,7 +32,7 @@ def setup_logging():
 
 def preprocess_image(image_path):
     """
-    Preprocess the image to improve OCR accuracy.
+    Preprocess the image to improve OCR accuracy for Russian text.
     
     Args:
         image_path (str): Path to the image file
@@ -43,18 +43,34 @@ def preprocess_image(image_path):
     # Read image using OpenCV
     img = cv2.imread(image_path)
     
+    if img is None:
+        raise ValueError(f"Could not load image: {image_path}")
+    
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Apply Gaussian blur to reduce noise
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    # Apply non-local means denoising (better than Gaussian blur for text)
+    denoised = cv2.fastNlMeansDenoising(gray, None, 10, 7, 21)
     
-    # Apply threshold to get binary image
-    _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # Apply adaptive thresholding for better handling of varying lighting
+    adaptive_thresh = cv2.adaptiveThreshold(
+        denoised, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+        cv2.THRESH_BINARY_INV, 11, 2
+    )
     
-    # Morphological operations to enhance text
-    kernel = np.ones((1, 1), np.uint8)
-    processed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+    # Also try OTSU thresholding
+    _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    
+    # Combine both thresholds - use adaptive where it has more detail, OTSU otherwise
+    combined = cv2.bitwise_or(adaptive_thresh, otsu_thresh)
+    
+    # Morphological operations to connect broken characters
+    kernel = np.ones((2, 2), np.uint8)
+    dilated = cv2.dilate(combined, kernel, iterations=1)
+    eroded = cv2.erode(dilated, kernel, iterations=1)
+    
+    # Invert back to black text on white background for Tesseract
+    processed = cv2.bitwise_not(eroded)
     
     # Convert back to PIL Image
     pil_img = Image.fromarray(processed)
@@ -62,29 +78,58 @@ def preprocess_image(image_path):
     return pil_img
 
 
-def extract_text_from_image(image_path, lang='rus'):
+def extract_text_from_image(image_path, lang='rus+eng'):
     """
     Extract text from a single image using Tesseract OCR.
     
+    The key issue with Russian text extraction is often:
+    1. Using character whitelist which can interfere with LSTM engine
+    2. Aggressive preprocessing that distorts Cyrillic characters
+    3. Not using the right PSM (Page Segmentation Mode)
+    
+    This function tries multiple approaches and returns the best result.
+    
     Args:
         image_path (str): Path to the image file
-        lang (str): Language code for OCR (default: 'rus' for Russian)
+        lang (str): Language code for OCR (default: 'rus+eng' for Russian and English)
     
     Returns:
         tuple: (image_path, extracted_text, success_status)
     """
     try:
-        # Preprocess the image
-        preprocessed_img = preprocess_image(image_path)
+        # Load the image
+        img = Image.open(image_path)
         
-        # Configure Tesseract for better accuracy
-        custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist="АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789 !\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~"'
+        # Configure Tesseract for best Russian text recognition
+        # Key findings:
+        # - LSTM engine (--oem 1) works better for Cyrillic than legacy (--oem 3)
+        # - NO character whitelist - it interferes with LSTM
+        # - PSM 3 (fully automatic) or PSM 6 (uniform block) work best
+        # - Minimal preprocessing often works better than aggressive processing
+        configs = [
+            r'--oem 1 --psm 3',  # Fully automatic - best for most cases
+            r'--oem 1 --psm 6',  # Uniform block of text
+        ]
         
-        # Extract text using Tesseract
-        text = pytesseract.image_to_string(preprocessed_img, lang=lang, config=custom_config)
+        best_text = ""
+        best_confidence = 0
+        
+        for config in configs:
+            # Get detailed output with confidence scores
+            data = pytesseract.image_to_data(img, lang=lang, config=config, output_type=pytesseract.Output.DICT)
+            
+            # Calculate average confidence
+            confidences = [int(c) for c in data['conf'] if int(c) > 0]
+            if confidences:
+                avg_conf = sum(confidences) / len(confidences)
+                
+                # Only use this result if it has better confidence
+                if avg_conf > best_confidence:
+                    best_confidence = avg_conf
+                    best_text = pytesseract.image_to_string(img, lang=lang, config=config)
         
         # Clean up the text
-        text = text.strip()
+        text = best_text.strip()
         
         return str(image_path), text, True
         

@@ -1,1 +1,16 @@
-Nothing should be ignored based on the provided file changes. The only modified file is 'extract_russian_text.py', which appears to be a source code file and should not be added to .gitignore.
+```
+# Logs
+*.log
+
+# Test results and output files
+final_test_results.txt
+russian_test_results.txt
+russian_test_results_v2.txt
+test_output.txt
+
+# Test images (if they are temporary/generated)
+test_noisy.jpg
+test_russian.jpg
+test_russian2.jpg
+test_russian_pil.jpg
+```
