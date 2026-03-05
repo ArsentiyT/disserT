@@ -1,0 +1,14 @@
+2026-03-05 05:58:13,703 - INFO - Processing 5 images...
+2026-03-05 05:58:18,609 - INFO - Processed 1/5 images successfully
+2026-03-05 05:58:19,191 - INFO - Processed 2/5 images successfully
+2026-03-05 05:58:19,409 - INFO - Processed 3/5 images successfully
+2026-03-05 05:58:19,409 - INFO - Processed 4/5 images successfully
+2026-03-05 05:58:22,414 - INFO - Processed 5/5 images successfully
+2026-03-05 05:58:22,466 - INFO - Text extraction completed! Results saved to extracted_test.txt
+2026-03-05 06:51:16,105 - INFO - Processing 5 images...
+2026-03-05 06:51:19,770 - INFO - Processed 1/5 images successfully
+2026-03-05 06:51:20,970 - INFO - Processed 2/5 images successfully
+2026-03-05 06:51:21,249 - INFO - Processed 3/5 images successfully
+2026-03-05 06:51:21,552 - INFO - Processed 4/5 images successfully
+2026-03-05 06:51:24,294 - INFO - Processed 5/5 images successfully
+2026-03-05 06:51:24,367 - INFO - Text extraction completed! Results saved to extracted_test.txt
