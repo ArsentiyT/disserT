@@ -1,16 +1,13 @@
 ```
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Logs
 *.log
 
-# Test results and output files
-final_test_results.txt
-russian_test_results.txt
-russian_test_results_v2.txt
-test_output.txt
-
-# Test images (if they are temporary/generated)
-test_noisy.jpg
-test_russian.jpg
-test_russian2.jpg
-test_russian_pil.jpg
+# Images (from changes)
+test_text_only.jpg
 ```

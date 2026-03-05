@@ -46,3 +46,10 @@
 2026-03-05 16:57:01,077 - INFO - Processed 7/8 images successfully
 2026-03-05 16:57:03,617 - INFO - Processed 8/8 images successfully
 2026-03-05 16:57:03,707 - INFO - Text extraction completed! Results saved to /workspace/final_test_results.txt
+2026-03-05 17:21:57,459 - INFO - Processing 5 images...
+2026-03-05 17:22:21,934 - INFO - Processed 1/5 images successfully
+2026-03-05 17:22:22,615 - INFO - Processed 2/5 images successfully
+2026-03-05 17:22:23,514 - INFO - Processed 3/5 images successfully
+2026-03-05 17:22:23,755 - INFO - Processed 4/5 images successfully
+2026-03-05 17:22:36,896 - INFO - Processed 5/5 images successfully
+2026-03-05 17:22:36,954 - INFO - Text extraction completed! Results saved to /workspace/text_only_test_output.txt

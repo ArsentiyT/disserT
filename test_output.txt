@@ -1,0 +1,15 @@
+--- Image: /workspace/test_images/img001.jpg ---
+Привет мир
+Тестирование
+12345
+
+--- Image: /workspace/test_images/img002.jpg ---
+Привет мир
+Тестирование
+12345
+
+
+Summary:
+Total images processed: 2
+Successfully processed: 2
+Failed to process: 0
