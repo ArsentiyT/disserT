@@ -12,3 +12,37 @@
 2026-03-05 06:51:21,552 - INFO - Processed 4/5 images successfully
 2026-03-05 06:51:24,294 - INFO - Processed 5/5 images successfully
 2026-03-05 06:51:24,367 - INFO - Text extraction completed! Results saved to extracted_test.txt
+2026-03-05 16:52:09,110 - INFO - Processing 2 images...
+2026-03-05 16:52:15,114 - INFO - Processed 1/2 images successfully
+2026-03-05 16:52:15,514 - INFO - Processed 2/2 images successfully
+2026-03-05 16:52:15,566 - INFO - Text extraction completed! Results saved to /workspace/test_output.txt
+2026-03-05 16:52:32,999 - INFO - Processing 8 images...
+2026-03-05 16:52:41,373 - INFO - Processed 1/8 images successfully
+2026-03-05 16:52:41,395 - INFO - Processed 2/8 images successfully
+2026-03-05 16:52:42,113 - INFO - Processed 3/8 images successfully
+2026-03-05 16:52:44,174 - INFO - Processed 4/8 images successfully
+2026-03-05 16:52:49,434 - INFO - Processed 5/8 images successfully
+2026-03-05 16:52:50,514 - INFO - Processed 6/8 images successfully
+2026-03-05 16:52:50,676 - INFO - Processed 7/8 images successfully
+2026-03-05 16:52:51,495 - INFO - Processed 8/8 images successfully
+2026-03-05 16:52:51,541 - INFO - Text extraction completed! Results saved to /workspace/russian_test_results.txt
+2026-03-05 16:53:21,995 - INFO - Processing 8 images...
+2026-03-05 16:53:52,075 - INFO - Processed 1/8 images successfully
+2026-03-05 16:53:52,134 - INFO - Processed 2/8 images successfully
+2026-03-05 16:53:53,056 - INFO - Processed 3/8 images successfully
+2026-03-05 16:53:53,777 - INFO - Processed 4/8 images successfully
+2026-03-05 16:54:20,235 - INFO - Processed 5/8 images successfully
+2026-03-05 16:54:21,236 - INFO - Processed 6/8 images successfully
+2026-03-05 16:54:24,319 - INFO - Processed 7/8 images successfully
+2026-03-05 16:54:30,656 - INFO - Processed 8/8 images successfully
+2026-03-05 16:54:30,712 - INFO - Text extraction completed! Results saved to /workspace/russian_test_results_v2.txt
+2026-03-05 16:56:21,644 - INFO - Processing 8 images...
+2026-03-05 16:56:41,893 - INFO - Processed 1/8 images successfully
+2026-03-05 16:56:42,556 - INFO - Processed 2/8 images successfully
+2026-03-05 16:56:43,115 - INFO - Processed 3/8 images successfully
+2026-03-05 16:56:43,458 - INFO - Processed 4/8 images successfully
+2026-03-05 16:56:59,454 - INFO - Processed 5/8 images successfully
+2026-03-05 16:57:00,637 - INFO - Processed 6/8 images successfully
+2026-03-05 16:57:01,077 - INFO - Processed 7/8 images successfully
+2026-03-05 16:57:03,617 - INFO - Processed 8/8 images successfully
+2026-03-05 16:57:03,707 - INFO - Text extraction completed! Results saved to /workspace/final_test_results.txt
